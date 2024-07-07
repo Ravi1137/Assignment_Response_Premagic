@@ -1,0 +1,31 @@
+version: '3'
+services:
+  backend:
+    build:
+      context: ./backend           # Path to the backend Dockerfile
+      dockerfile: Dockerfile       # Name of the Dockerfile for backend
+    ports:
+      - "5000:5000"                # Map port 5000 of host to port 5000 of container
+    # depends_on:
+    #   - db                         # Optional: if your backend depends on a database service
+    # environment:
+    #   - FLASK_ENV=development      # Optional: set environment variables as needed
+
+  frontend:
+    build:
+      context: ./frontend          # Path to the frontend Dockerfile
+      dockerfile: Dockerfile       # Name of the Dockerfile for frontend
+    ports:
+      - "80:80"                    # Map port 80 of host to port 80 of container
+    depends_on:
+      - backend                    # Frontend depends on backend service
+    # environment:
+    #   - NODE_ENV=production        # Optional: set environment variables as needed
+
+# Optional: Define additional services like a database (e.g., MySQL, PostgreSQL)
+# db:
+#   image: mysql:latest
+#   environment:
+#     MYSQL_ROOT_PASSWORD: example
+
+

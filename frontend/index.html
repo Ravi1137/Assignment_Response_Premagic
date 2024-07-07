@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delayed Queue</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h1>Queue</h1>
+            <form id="taskForm">
+                <label for="task">Task:</label>
+                <input type="text" id="task" name="task" required>
+                <label for="delay">Delay (seconds):</label>
+                <input type="number" id="delay" name="delay" required>
+                <button type="submit">Submit</button>
+            </form>
+                <br>
+            <button id="runButton">Run</button>
+        </div>
+        <div class="list-container">
+            <h1>Task List</h1>
+            <ul id="taskList"></ul>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('taskForm');
+        const runButton = document.getElementById('runButton');
+        const taskList = document.getElementById('taskList');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const task = document.getElementById('task').value;
+            const delay = document.getElementById('delay').value;
+
+            const response = await fetch('http://localhost:5000/add_task', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ task, delay })
+            });
+
+            const result = await response.json();
+            console.log(result);
+        });
+
+        runButton.addEventListener('click', () => {
+            setInterval(async () => {
+                const response = await fetch('http://localhost:5000/get_tasks');
+                const result = await response.json();
+                result.tasks.forEach(task => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = task;
+                    taskList.appendChild(listItem);
+                });
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
